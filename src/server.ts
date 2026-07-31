@@ -9,7 +9,7 @@ async function bootstrap() {
             console.log(`Server running on port ${env.PORT}`);
         });
         const shutdown = async ()=>{
-            console.log("Shutting sown...");
+            console.log("Shutting down...");
             server.close(async ()=>{
                 await disconnectDatabase();
                 process.exit(0);
