@@ -1,7 +1,7 @@
 import "dotenv/config";
 import {z} from "zod";
 
-const schema = z.object({
+const envSchema = z.object({
     PORT: z.coerce.number().int().positive(),
     DATABASE_URL: z.string().min(1),
     JWT_ACCESS_SECRET: z.string().min(32),
@@ -13,7 +13,7 @@ const schema = z.object({
     ])
 });
 
-const parsed = schema.safeParse(process.env);
+const parsed = envSchema.safeParse(process.env);
 
 if(!parsed.success) {
     console.error(z.flattenError(parsed.error).fieldErrors);
