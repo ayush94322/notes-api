@@ -11,3 +11,24 @@ export const createNoteSchema = z.object({
         .trim()
         .min(1),
 });
+
+export const getNotesSchema = z.object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(100),
+    search: z.string().trim().optional(),
+    favorite: z.coerce.boolean().optional(),
+    archived: z.coerce.boolean().optional(),
+    sort: z
+        .enum([
+            "createdAt",
+            "updatedAt",
+            "title"
+        ])
+        .default("createdAt"),
+    order: z
+        .enum([
+            "asc",
+            "desc"
+        ])
+        .default("desc")
+});
