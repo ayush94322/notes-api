@@ -1,4 +1,5 @@
 import { NoteRepository } from "../repositories/note.repository.js";
+import { GetNotesOptions } from "../utils/notes.js";
 
 export class NoteService {
     constructor(
@@ -15,5 +16,20 @@ export class NoteService {
             content,
             userId
         });
+    }
+
+    async findAll(options: GetNotesOptions) {
+        const result = await this.repository.findAll(options);
+        return {
+            data: result.notes,
+            pagination: {
+                page: options.page,
+                limit: options.limit,
+                total: result.total,
+                totalPages: Math.ceil(
+                    result.total / options.limit
+                )
+            }
+        }
     }
 }
