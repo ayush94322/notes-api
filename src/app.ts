@@ -1,10 +1,15 @@
 import express from "express";
 import noteRoutes from "./routes/note.route.js";
 import authRoutes from "./routes/auth.route.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
+import { NotFoundError } from "./errors/NotFoundError.js";
+
 const app = express();
 
+//Middleware
 app.use(express.json());
 
+//Routing
 app.use("/notes", noteRoutes);
 app.use("/auth", authRoutes);
 app.get("/health", (req, res)=>{
@@ -14,5 +19,10 @@ app.get("/health", (req, res)=>{
     });
 });
 
+// Error handler
+app.use(()=>{
+    throw new NotFoundError("Route Not Found");
+});
+app.use(errorHandler);
 
 export default app;
