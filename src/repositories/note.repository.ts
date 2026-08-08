@@ -12,6 +12,19 @@ export class NoteRepository {
         });
     }
 
+    async findById(
+        id: string,
+        userId: string
+    ) {
+        return prisma.note.findFirst({
+            where: {
+                id,
+                userId,
+                deletedAt: null
+            }
+        });
+    }
+
     async findAll(options: {
         page: number;
         limit: number;
