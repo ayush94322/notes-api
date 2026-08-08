@@ -36,3 +36,19 @@ export const getNotesSchema = z.object({
 export const noteIdSchema = z.object({
     id: z.string().cuid(),
 });
+
+export const updateNoteSchema = z.object({
+    title: z
+        .string()
+        .trim()
+        .min(1)
+        .max(200)
+        .optional(),
+    content: z
+        .string()
+        .trim()
+        .min(1)
+        .optional(),
+    favorites: z.boolean().optional(),
+    archived: z.boolean().optional()
+})
