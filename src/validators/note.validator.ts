@@ -32,3 +32,7 @@ export const getNotesSchema = z.object({
         ])
         .default("desc")
 });
+
+export const noteIdSchema = z.object({
+    id: z.string().cuid(),
+});
