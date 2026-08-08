@@ -1,4 +1,5 @@
 import { NotFoundError } from "../errors/NotFoundError.js";
+import { Prisma } from "../generated/prisma/client.js";
 import { NoteRepository } from "../repositories/note.repository.js";
 import { GetNotesOptions } from "../utils/notes.js";
 
@@ -43,5 +44,21 @@ export class NoteService {
                 )
             }
         }
+    }
+
+    async update(
+        id: string,
+        userId: string,
+        data: Prisma.NoteUpdateInput
+    ) {
+        const result = await this.repository.update(
+            id,
+            userId,
+            data
+        );
+        if(result.count === 0) {
+            throw new NotFoundError("Note not found");
+        }
+        return this.repository.findById(id, userId);
     }
 }
