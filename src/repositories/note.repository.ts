@@ -93,4 +93,19 @@ export class NoteRepository {
             total
         };
     }
+
+    async update(
+        id: string,
+        userId: string,
+        data: Prisma.NoteUpdateInput
+    ) {
+        return prisma.note.updateMany({
+            where: {
+                id,
+                userId,
+                deletedAt: null
+            },
+            data
+        });
+    }
 }
