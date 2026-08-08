@@ -24,6 +24,18 @@ export class NoteController {
         return res.status(201).json(note);
     });
 
+    findById = asyncHandler(async (
+        req: Request,
+        res: Response
+    ) => {
+        const {id} = req.validatedData as {id: string};
+        const note = await this.service.findById(
+            id,
+            req.user!.id
+        );
+        return res.json(note);
+    })
+
     findAll = asyncHandler(async (
         req: Request,
         res: Response
