@@ -1,6 +1,7 @@
 import { AuthRepository } from "../repositories/auth.repository.js";
 import bcrypt from "bcrypt";
 import { signAccessToken } from "../utils/jwt.js";
+import { UnauthorizedError } from "../errors/UnauthorizedError.js";
 
 export class AuthService {
     constructor(
@@ -11,7 +12,7 @@ export class AuthService {
         const user = await this.repository.findByEmail(email);
 
         if(!user) {
-            throw new Error("Invalid email or password");
+            throw new UnauthorizedError("Invalid email or password");
         }
         console.log(password, user.passwordHash);
         const matched = await bcrypt.compare(
@@ -19,7 +20,7 @@ export class AuthService {
             user.passwordHash
         );
         if(!matched) {
-            throw new Error("Invalid email or password");
+            throw new UnauthorizedError("Invalid email or password");
         }
 
         const accessToken = signAccessToken({

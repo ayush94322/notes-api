@@ -12,7 +12,7 @@ export class NoteService {
         content: string,
         userId: string
     ) {
-        return this.repository.create({
+        return await this.repository.create({
             title,
             content,
             userId
@@ -23,7 +23,7 @@ export class NoteService {
         id: string,
         userId: string
     ) {
-        const note = this.repository.findById(id, userId);
+        const note = await this.repository.findById(id, userId);
         if(!note) {
             throw new NotFoundError("Note not found");
         }
