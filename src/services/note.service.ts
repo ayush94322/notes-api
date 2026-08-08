@@ -1,3 +1,4 @@
+import { NotFoundError } from "../errors/NotFoundError.js";
 import { NoteRepository } from "../repositories/note.repository.js";
 import { GetNotesOptions } from "../utils/notes.js";
 
@@ -16,6 +17,17 @@ export class NoteService {
             content,
             userId
         });
+    }
+
+    async findById(
+        id: string,
+        userId: string
+    ) {
+        const note = this.repository.findById(id, userId);
+        if(!note) {
+            throw new NotFoundError("Note not found");
+        }
+        return note;
     }
 
     async findAll(options: GetNotesOptions) {
