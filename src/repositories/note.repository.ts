@@ -108,4 +108,20 @@ export class NoteRepository {
             data
         });
     }
+
+    async softDelete(
+        id: string,
+        userId: string
+    ) {
+        return prisma.note.updateMany({
+            where: {
+                id,
+                userId,
+                deletedAt: null,
+            },
+            data: {
+                deletedAt: new Date()
+            }
+        });
+    }
 }
