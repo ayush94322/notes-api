@@ -142,4 +142,19 @@ export class NoteRepository {
             }
         });
     }
+
+    async permanentDelete(
+        id: string,
+        userId: string
+    ) {
+        return prisma.note.deleteMany({
+            where: {
+                id,
+                userId,
+                deletedAt: {
+                    not: null
+                }
+            }
+        });
+    }
 }
