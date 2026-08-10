@@ -124,4 +124,22 @@ export class NoteRepository {
             }
         });
     }
+
+    async restore(
+        id: string,
+        userId: string
+    ) {
+        return prisma.note.updateMany({
+            where: {
+                id,
+                userId,
+                deletedAt: {
+                    not: null
+                },
+            },
+            data: {
+                deletedAt: null
+            }
+        });
+    }
 }
