@@ -75,4 +75,20 @@ export class NoteService {
             throw new NotFoundError("Note Not Found");
         }
     }
+
+    async restore(
+        id: string,
+        userId: string
+    ) {
+        const result = await this.repository.restore(
+            id,
+            userId
+        );
+
+        if(result.count === 0) {
+            throw new NotFoundError("Note Not Found");
+        }
+
+        return this.repository.findById(id, userId);
+    }
 }
