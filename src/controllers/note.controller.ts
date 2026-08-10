@@ -2,6 +2,7 @@ import type {Request, Response} from "express";
 import { NoteService } from "../services/note.service.js";
 import { GetNotesOptions } from "../utils/notes.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { success } from "zod";
 
 export class NoteController {
     constructor(
@@ -82,5 +83,21 @@ export class NoteController {
             success: true,
             message: "Deleted successfully"
         });
-    })
+    });
+
+    permanentDelete = asyncHandler(async (
+        req: Request,
+        res: Response
+    ) => {
+        const {id} = req.validatedData as {id: string};
+        await this.service.permanentDelete(
+            id,
+            req.user!.id
+        );
+        
+        res.status(200).json({
+            success: true,
+            message: "Note permanently deleted"
+        });
+    });
 }
