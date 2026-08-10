@@ -48,6 +48,25 @@ export class NoteController {
         return res.json(result);
     });
 
+    update = asyncHandler(async(
+        req: Request,
+        res: Response
+    )=>{
+        const {id, ...updatedData} = req.validatedData as {
+            id: string
+        };
+        const updatedNote = await this.service.update(
+            id,
+            req.user!.id,
+            updatedData
+        );
+        res.status(200).json({
+            success: true,
+            message: "Note updated successfully",
+            data: updatedNote
+        });
+    })
+
     delete = asyncHandler(async (
         req: Request,
         res: Response
@@ -59,6 +78,9 @@ export class NoteController {
             req.user!.id
         );
 
-        res.status(204).send();
+        res.status(204).json({
+            success: true,
+            message: "Deleted successfully"
+        });
     })
 }
