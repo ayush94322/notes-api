@@ -91,4 +91,18 @@ export class NoteService {
 
         return this.repository.findById(id, userId);
     }
+
+    async permanentDelete(
+        id: string,
+        userId: string
+    ) {
+        const result = await this.repository.permanentDelete(
+            id,
+            userId
+        );
+
+        if(result.count === 0) {
+            throw new NotFoundError("Note Not Found or Deleted");
+        }
+    }
 }
