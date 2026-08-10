@@ -47,4 +47,18 @@ export class NoteController {
         });
         return res.json(result);
     });
+
+    delete = asyncHandler(async (
+        req: Request,
+        res: Response
+    )=>{
+        const {id} = req.validatedData as {id: string};
+
+        await this.service.softDelete(
+            id,
+            req.user!.id
+        );
+
+        res.status(204).send();
+    })
 }
