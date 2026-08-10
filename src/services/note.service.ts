@@ -61,4 +61,18 @@ export class NoteService {
         }
         return this.repository.findById(id, userId);
     }
+
+    async softDelete(
+        id: string,
+        userId: string
+    ) {
+        const result = await this.repository.softDelete(
+            id,
+            userId
+        );
+
+        if(result.count === 0) {
+            throw new NotFoundError("Note Not Found");
+        }
+    }
 }
