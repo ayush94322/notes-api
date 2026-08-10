@@ -85,6 +85,21 @@ export class NoteController {
         });
     });
 
+    restore = asyncHandler(async(
+        req: Request,
+        res: Response
+    )=>{
+        const {id} = req.validatedData as {id: string};
+        await this.service.restore(
+            id,
+            req.user!.id
+        );
+        res.status(200).json({
+            success: true,
+            message: "Note restore successful"
+        });
+    })
+
     permanentDelete = asyncHandler(async (
         req: Request,
         res: Response
