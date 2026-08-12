@@ -218,17 +218,51 @@ export class NoteRepository {
         ids: string[],
         userId: string
     ) {
-        return prisma.note.updateMany({
-            where: {
-                id: {
-                    in: ids
+        return prisma.$transaction(async (tx)=>{
+            const notes = await tx.note.findMany({
+                where: {
+                    id: {
+                        in: ids
+                    },
+                    userId,
+                    deletedAt: null
                 },
-                userId,
-                deletedAt: null
-            },
-            data: {
-                deletedAt: new Date()
+                select: {
+                    id: true
+                }
+            });
+
+            if(notes.length === 0) {
+                return {
+                    deleted: 0
+                };
             }
-        });
+            const noteIds = notes.map(
+                (note)=>note.id
+            );
+
+            await tx.noteDeletion.createMany({
+                data: noteIds.map((noteId)=>({
+                    noteId,
+                    userId
+                }))
+            });
+            const result = await tx.note.updateMany({
+                where: {
+                    id: {
+                        in: noteIds
+                    },
+                    userId,
+                    deletedAt: null
+                },
+                data: {
+                    deletedAt: new Date()
+                }
+            });
+
+            return {
+                deleted: result.count
+            };
+        })
     }
 }
