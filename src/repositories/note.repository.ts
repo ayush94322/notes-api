@@ -213,4 +213,22 @@ export class NoteRepository {
             }
         });
     }
+
+    async bulkDelete(
+        ids: string[],
+        userId: string
+    ) {
+        return prisma.note.updateMany({
+            where: {
+                id: {
+                    in: ids
+                },
+                userId,
+                deletedAt: null
+            },
+            data: {
+                deletedAt: new Date()
+            }
+        });
+    }
 }
