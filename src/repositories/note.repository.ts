@@ -195,4 +195,22 @@ export class NoteRepository {
             }
         });
     }
+
+    async bulkFavourite(
+        ids: string[],
+        userId: string
+    ) {
+        return prisma.note.updateMany({
+            where: {
+                id: {
+                    in: ids
+                },
+                userId,
+                deletedAt: null
+            },
+            data: {
+                favorite: true
+            }
+        });
+    }
 }
