@@ -176,5 +176,23 @@ export class NoteRepository {
         });
     }
 
-    
+    async bulkRestore(
+        ids: string[],
+        userId: string 
+    ) {
+        return prisma.note.updateMany({
+            where: {
+                id: {
+                    in: ids
+                },
+                userId,
+                deletedAt: {
+                    not: null
+                }
+            },
+            data: {
+                deletedAt: null
+            }
+        });
+    }
 }
