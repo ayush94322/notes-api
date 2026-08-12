@@ -51,4 +51,11 @@ export const updateNoteSchema = z.object({
         .optional(),
     favorites: z.boolean().optional(),
     archived: z.boolean().optional()
-})
+});
+
+export const bulkNotesSchema = z.object({
+    ids: z
+        .array(z.string().cuid())
+        .min(1)
+        .max(100)
+});
