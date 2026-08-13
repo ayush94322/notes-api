@@ -160,4 +160,20 @@ export class NoteController {
         );
         res.json(result);
     });
+
+    bulkArchive = asyncHandler(async (
+        req: Request,
+        res: Response
+    )=>{
+        const {ids} = req.validatedData as {
+            ids: string[]
+        };
+        const result = await this.service.bulkArchive(
+            ids,
+            req.user!.id
+        );
+        res.json(result);
+    });
+
+    
 }
