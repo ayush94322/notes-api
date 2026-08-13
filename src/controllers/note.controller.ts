@@ -145,5 +145,19 @@ export class NoteController {
             req.user!.id
         );
         res.json(result);
-    })
+    });
+
+    bulkRestore = asyncHandler(async (
+        req: Request,
+        res: Response
+    )=>{
+        const {ids} = req.validatedData as {
+            ids: string[]
+        };
+        const result = await this.service.bulkRestore(
+            ids,
+            req.user!.id
+        );
+        res.json(result);
+    });
 }
