@@ -111,4 +111,14 @@ export class NoteService {
             userId
         );
     }
+
+    async bulkFavorite(
+        ids: string[],
+        userId: string
+    ) {
+        return this.repository.bulkFavourite(
+            ids,
+            userId
+        );
+    }
 }
