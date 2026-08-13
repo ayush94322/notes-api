@@ -121,4 +121,14 @@ export class NoteService {
             userId
         );
     }
+
+    async bulkRestore(
+        ids: string[],
+        userId: string
+    ) {
+        return this.repository.bulkRestore(
+            ids,
+            userId
+        );
+    }
 }
