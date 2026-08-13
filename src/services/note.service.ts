@@ -131,4 +131,14 @@ export class NoteService {
             userId
         );
     }
+
+    async bulkArchive(
+        ids: string[],
+        userId: string
+    ) {
+        return this.repository.bulkArchive(
+            ids,
+            userId
+        );
+    }
 }
