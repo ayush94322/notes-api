@@ -70,7 +70,6 @@ export class NoteService {
             id,
             userId
         );
-
         if(result.count === 0) {
             throw new NotFoundError("Note Not Found");
         }
@@ -84,11 +83,9 @@ export class NoteService {
             id,
             userId
         );
-
         if(result.count === 0) {
             throw new NotFoundError("Note Not Found");
         }
-
         return this.repository.findById(id, userId);
     }
 
@@ -100,9 +97,18 @@ export class NoteService {
             id,
             userId
         );
-
         if(result.count === 0) {
             throw new NotFoundError("Note Not Found or Deleted");
         }
+    }
+
+    async bulkDelete(
+        ids: string[],
+        userId: string
+    ) {
+        return this.repository.bulkDelete(
+            ids,
+            userId
+        );
     }
 }
