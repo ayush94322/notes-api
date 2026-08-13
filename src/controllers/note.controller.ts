@@ -115,4 +115,21 @@ export class NoteController {
             message: "Note permanently deleted"
         });
     });
+
+    bulkDelete = asyncHandler(async (
+        req: Request,
+        res: Response
+    )=>{
+        const {ids} = req.validatedData as {
+            ids: string[];
+        }; 
+        const result = await this.service.bulkDelete(
+            ids,
+            req.user!.id
+        );
+        res.json({
+            success: true,
+            ...result
+        });
+    })
 }
