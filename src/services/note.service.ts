@@ -141,4 +141,8 @@ export class NoteService {
             userId
         );
     }
+
+    async getStats(userId: string) {
+        return this.repository.getStats(userId);
+    }
 }
