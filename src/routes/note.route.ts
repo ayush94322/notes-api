@@ -8,6 +8,7 @@ const router = Router();
 
 const controller = new NoteController();
 
+router.get("/stats", authenticate, controller.getStats.bind(controller));
 //bulk op routes
 router.patch("/bulk/archive", authenticate, validate(bulkNotesSchema), controller.bulkArchive.bind(controller));
 router.patch("/bulk/restore", authenticate, validate(bulkNotesSchema), controller.bulkRestore.bind(controller));
