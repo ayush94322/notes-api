@@ -175,5 +175,17 @@ export class NoteController {
         res.json(result);
     });
 
-    
+    getStats = asyncHandler(async (
+        req: Request,
+        res: Response
+    ) => {
+        const stats = this.service.getStats(
+            req.user!.id
+        );
+
+        res.json({
+            succes: true,
+            data: stats
+        });
+    });
 }
