@@ -372,4 +372,56 @@ export class NoteRepository {
             };
         })
     }
+
+    async getStats(userId: string) {
+        const [
+            total,
+            active,
+            deleted,
+            favorites,
+            archived
+        ] = await prisma.$transaction([
+            prisma.note.count({
+                where: {
+                    userId
+                }
+            }),
+            prisma.note.count({
+                where: {
+                    userId,
+                    deletedAt: null
+                }
+            }),
+            prisma.note.count({
+                where: {
+                    userId,
+                    deletedAt: {
+                        not: null
+                    }
+                }
+            }),
+            prisma.note.count({
+                where: {
+                    userId,
+                    deletedAt: null,
+                    favorite: true
+                }
+            }),
+            prisma.note.count({
+                where: {
+                    userId,
+                    deletedAt: null,
+                    archived: true
+                }
+            })
+        ]);
+
+        return {
+            total,
+            active,
+            deleted,
+            favorites,
+            archived
+        };
+    }
 }
