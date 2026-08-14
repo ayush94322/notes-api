@@ -1,5 +1,6 @@
 import {prisma} from "../lib/prisma.js";
-import type {Prisma} from "../generated/prisma/client.js";
+import { Prisma } from "../generated/prisma/client.js";
+import type {Note} from "../generated/prisma/client.js";
 
 export class NoteRepository {
     async create(data: {
@@ -57,41 +58,147 @@ export class NoteRepository {
         if(archived !== undefined) {
             where.archived = archived;
         }
-        if(search) {
-            where.OR = [
-                {
-                    title: {
-                        contains: search,
-                        mode: "insensitive"
+        if(!search) {
+            const [notes, total] = await prisma.$transaction([
+                prisma.note.findMany({
+                    where,
+                    skip: (page-1) * limit,
+                    take: limit,
+                    orderBy: {
+                        [sort]: order
                     }
-                },
-                {
-                    content: {
-                        contains: search,
-                        mode: "insensitive"
-                    }
-                }
-            ];
+                }),
+                prisma.note.count({
+                    where
+                })
+            ]);
+            return {
+                notes,
+                total
+            };
         }
-        const [notes, total] = await prisma.$transaction([
-            prisma.note.findMany({
-                where,
-                skip: (page-1)*limit,
-                take: limit,
-                orderBy: {
-                    [sort]: order
-                }
-            }),
 
-            prisma.note.count({
-                where
-            })
+        const offset = (page-1) * limit;
+        const sortColumn = {
+            createdAt: Prisma.sql`"createdAt"`,
+            updatedAt: Prisma.sql`"updatedAt"`,
+            title: Prisma.sql`"title"`
+        }[sort];
+        const sortOrder = order === "asc"
+            ? Prisma.sql`ASC`
+            : Prisma.sql`DESC`;
+
+        const [notes, countResult] = await prisma.$transaction([
+            prisma.$queryRaw<Note[]>`
+                SELECT
+                    "id",
+                    "title",
+                    "content",
+                    "favorite",
+                    "archived",
+                    "deletedAt",
+                    "createdAt",
+                    "updatedAt",
+                    "userId"
+                FROM "Note"
+                WHERE
+                    "userId" = ${userId}
+                    AND "deletedAt" IS NULL
+                    AND to_tsvector(
+                        'english',
+                        coalesce("title", '') || ' ' || coalesce("content", '')
+                    )
+                    @@ websearch_to_tsquery(
+                        'english',
+                        ${search}
+                    )
+                    ${
+                        favorite !== undefined
+                            ? Prisma.sql`AND "favorite" = ${favorite}`
+                            : Prisma.empty
+                    }
+                    ${
+                        archived !== undefined
+                            ? Prisma.sql`AND "archived" = ${archived}`
+                            : Prisma.empty
+                    }
+                ORDER BY
+                    ${sortColumn}
+                    ${sortOrder}
+                LIMIT ${limit}
+                OFFSET ${offset}
+            `,
+            prisma.$queryRaw<{ count: bigint }[]>`
+                SELECT COUNT(*)::bigint AS count
+                FROM "Note"
+
+                WHERE 
+                    "userId" = ${userId}
+                    AND "deletedAt" IS NULL
+
+                    AND to_tsvector(
+                        'english',
+                        coalesce("title", '') || ' ' || coalesce("content", '')
+                    )
+                    @@ websearch_to_tsquery(
+                        'english',
+                        ${search}
+                    )
+
+                    ${
+                        favorite !== undefined
+                            ? Prisma.sql`AND "favorite" = ${favorite}`
+                            : Prisma.empty
+                    }
+                    ${
+                        archived !== undefined
+                            ? Prisma.sql`AND "archived" = ${archived}`
+                            : Prisma.empty
+                    }
+            `
         ]);
-
+        const total = Number(
+            countResult[0]?.count ?? 0
+        );
         return {
             notes,
             total
         };
+        // if(search) {
+        //     where.OR = [
+        //         {
+        //             title: {
+        //                 contains: search,
+        //                 mode: "insensitive"
+        //             }
+        //         },
+        //         {
+        //             content: {
+        //                 contains: search,
+        //                 mode: "insensitive"
+        //             }
+        //         }
+        //     ];
+        // }
+        // const [notes, total] = await prisma.$transaction([
+        //     prisma.note.findMany({
+        //         where,
+        //         skip: (page-1)*limit,
+        //         take: limit,
+        //         orderBy: {
+        //             [sort]: order
+        //         }
+        //     }),
+
+        //     prisma.note.count({
+        //         where
+        //     })
+        // ]);
+
+        // return {
+        //     notes,
+        //     total
+        // };
     }
 
     async update(
