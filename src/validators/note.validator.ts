@@ -51,7 +51,11 @@ export const updateNoteSchema = z.object({
         .optional(),
     favorites: z.boolean().optional(),
     archived: z.boolean().optional()
-});
+}).refine((data)=> Object.keys(data).length > 0,
+    {
+        message: "At least one field is required"
+    }
+)
 
 export const bulkNotesSchema = z.object({
     ids: z
