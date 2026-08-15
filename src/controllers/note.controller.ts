@@ -22,7 +22,10 @@ export class NoteController {
             content,
             req.user!.id
         );
-        return res.status(201).json(note);
+        res.status(201).json({
+            success: true,
+            data: note
+        });
     });
 
     findById = asyncHandler(async (
@@ -34,7 +37,10 @@ export class NoteController {
             id,
             req.user!.id
         );
-        return res.json(note);
+        res.json({
+            success: true,
+            data: note
+        });
     })
 
     findAll = asyncHandler(async (
@@ -46,7 +52,10 @@ export class NoteController {
             ...query,
             userId: req.user!.id
         });
-        return res.json(result);
+        res.json({
+            success: true,
+            data: result
+        });
     });
 
     update = asyncHandler(async(
@@ -129,7 +138,7 @@ export class NoteController {
         );
         res.json({
             success: true,
-            ...result
+            data: result
         });
     })
 
@@ -144,7 +153,10 @@ export class NoteController {
             ids,
             req.user!.id
         );
-        res.json(result);
+        res.json({
+            success: true,
+            data: result
+        });
     });
 
     bulkRestore = asyncHandler(async (
@@ -158,7 +170,10 @@ export class NoteController {
             ids,
             req.user!.id
         );
-        res.json(result);
+        res.json({
+            success: true,
+            data: result
+        });
     });
 
     bulkArchive = asyncHandler(async (
@@ -172,7 +187,10 @@ export class NoteController {
             ids,
             req.user!.id
         );
-        res.json(result);
+        res.json({
+            success: true,
+            data: result
+        });
     });
 
     getStats = asyncHandler(async (
@@ -184,7 +202,7 @@ export class NoteController {
         );
 
         res.json({
-            succes: true,
+            success: true,
             data: stats
         });
     });
