@@ -303,7 +303,7 @@ export class NoteRepository {
         });
     }
 
-    async bulkFavourite(
+    async bulkFavorite(
         ids: string[],
         userId: string
     ) {

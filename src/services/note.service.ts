@@ -26,7 +26,7 @@ export class NoteService {
     ) {
         const note = await this.repository.findById(id, userId);
         if(!note) {
-            throw new NotFoundError("Note not found");
+            throw new NotFoundError("Note Not Found");
         }
         return note;
     }
@@ -57,7 +57,7 @@ export class NoteService {
             data
         );
         if(result.count === 0) {
-            throw new NotFoundError("Note not found");
+            throw new NotFoundError("Note Not Found");
         }
         return this.repository.findById(id, userId);
     }
@@ -116,7 +116,7 @@ export class NoteService {
         ids: string[],
         userId: string
     ) {
-        return this.repository.bulkFavourite(
+        return this.repository.bulkFavorite(
             ids,
             userId
         );
